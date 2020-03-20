@@ -6,12 +6,12 @@
  * Email: <rentianyi@homme-inc.com>
  */
 
-namespace app\Exceptions\Base;
+namespace ZhijiaCommon\Exceptions\Base;
 
 /**
  * 用于鉴定实现接口的异常类
  * Interface ApiExceptionInterface
- * @package app\Exceptions\Base
+ * @package ZhijiaCommon\Exceptions\Base
  */
 interface ApiExceptionInterface
 {

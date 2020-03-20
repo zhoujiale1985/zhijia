@@ -6,14 +6,14 @@
  * Email: <rentianyi@homme-inc.com>
  */
 
-namespace app\Exceptions\Base;
+namespace ZhijiaCommon\Exceptions\Base;
 
 use Exception;
 
 /**
  * 基础异常类，所有API接口的异常类将继承该类
  * Class ApiException
- * @package app\Exceptions\Base
+ * @package ZhijiaCommon\Exceptions\Base
  */
 class ApiException extends Exception implements ApiExceptionInterface
 {

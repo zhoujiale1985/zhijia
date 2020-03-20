@@ -1,13 +1,13 @@
 <?php
 
-namespace app\Exceptions;
+namespace ZhijiaCommon\Exceptions;
 
-use app\Exceptions\Base\ApiException;
+use ZhijiaCommon\Exceptions\Base\ApiException;
 
 /**
  * 供应商管理异常类
  * Class SupplierException
- * @package app\Exceptions
+ * @package ZhijiaCommon\Exceptions
  */
 class SupplierException extends ApiException
 {

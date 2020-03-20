@@ -1,5 +1,5 @@
 <?php
-namespace App\Utils;
+namespace ZhijiaCommon\Utils;
 
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Manager;

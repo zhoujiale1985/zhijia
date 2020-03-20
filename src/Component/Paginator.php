@@ -6,13 +6,13 @@
  * Email: <rentianyi@homme-inc.com>
  */
 
-namespace app\Component;
+namespace ZhijiaCommon\Component;
 
 /**
  * Trait Paginator
  * 分页处理 Trait
  *
- * @package app\Component
+ * @package ZhijiaCommon\Component
  */
 trait Paginator
 {

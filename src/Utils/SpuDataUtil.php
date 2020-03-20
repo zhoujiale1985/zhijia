@@ -1,5 +1,5 @@
 <?php
-namespace App\Utils;
+namespace ZhijiaCommon\Utils;
 
 class SpuDataUtil {
     public static function updateSkuPrice() {

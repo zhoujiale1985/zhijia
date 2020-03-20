@@ -6,11 +6,11 @@
  * Email: <rentianyi@homme-inc.com>
  */
 
-namespace app\Component;
+namespace ZhijiaCommon\Component;
 
 /**
  * Class FromConstant
- * @package app\Component
+ * @package ZhijiaCommon\Component
  */
 class FromConstant
 {

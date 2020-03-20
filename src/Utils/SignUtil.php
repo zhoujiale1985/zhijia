@@ -1,5 +1,5 @@
 <?php
-namespace App\Utils;
+namespace ZhijiaCommon\Utils;
 
 class SignUtil {
     public static function getData($str) {

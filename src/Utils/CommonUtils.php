@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils;
+namespace ZhijiaCommon\Utils;
 
 /**
  * 通用工具类

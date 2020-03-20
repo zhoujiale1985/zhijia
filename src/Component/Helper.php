@@ -5,11 +5,11 @@
  * Date: 2019/10/10 5:06 下午
  * Email: <rentianyi@homme-inc.com>
  */
-namespace app\Component;
+namespace ZhijiaCommon\Component;
 
 /**
  * Class Helper
- * @package app\Component
+ * @package ZhijiaCommon\Component
  */
 class Helper
 {

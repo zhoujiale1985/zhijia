@@ -6,15 +6,16 @@
  * Email: <rentianyi@homme-inc.com>
  */
 
-namespace app\Component;
+namespace ZhijiaCommon\Component;
 
 /**
  * Class DistrictData
- * @package app\Component
+ * @package ZhijiaCommon\Component
  */
 class DistrictData
 {
     /**
+     * 
      * 地区数据
      * @var array
      */

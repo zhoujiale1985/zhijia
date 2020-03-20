@@ -5,14 +5,14 @@
  * Date: 2019-08-08 16:52
  * Email: <rentianyi@homme-inc.com>
  */
-namespace app\Component;
+namespace ZhijiaCommon\Component;
 
-use app\Exceptions\Base\ApiException;
+use ZhijiaCommon\Exceptions\Base\ApiException;
 use Exception;
 
 /**
  * Trait ErrorCode
- * @package app\Component
+ * @package ZhijiaCommon\Component
  */
 trait ErrorCode
 {
