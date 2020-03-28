@@ -1,4 +1,5 @@
 <?php
+
 namespace ZhijiaCommon\Utils;
 
 use MongoDB\Driver\BulkWrite;
@@ -7,15 +8,18 @@ use MongoDB\Driver\WriteConcern;
 use MongoDB\Driver\Exception\BulkWriteException;
 use MongoDB\Driver\Exception\Exception;
 
-class MongoUtil {
-    public static function sortByKey($handle, $request) {
+class MongoUtil
+{
+    public static function sortByKey($handle, $request)
+    {
         if ($request->input('sort_key')) {
             return $handle->orderBy($request->input('sort_key'), $request->input('sort_direction', 'asc'));
         }
         return $handle;
     }
 
-    public static function multipleUpdate($filterList, $dataList, $collectionName) {
+    public static function multipleUpdate($filterList, $dataList, $collectionName)
+    {
         // mongo config
         $host = env('MONGODB_HOST');
         $port = env('MONGODB_PORT');
@@ -36,46 +40,46 @@ class MongoUtil {
 
         try {
             $result = $manager->executeBulkWrite("$database.$collectionName", $bulk, $writeConcern);
-        } catch(BulkWriteException $e) {
+        } catch (BulkWriteException $e) {
             $result = $e->getWriteResult();
 
             // Check if the write concern could not be fulfilled
             if ($writeConcernError = $result->getWriteConcernError()) {
-              $log = sprintf("%s (%d): %s\n",
-                   $writeConcernError->getMessage(),
-                   $writeConcernError->getCode(),
-                   var_export($writeConcernError->getInfo(), true));
-              Log::error($log);
-              return $this->fail($log);
+                $log = sprintf("%s (%d): %s\n",
+                    $writeConcernError->getMessage(),
+                    $writeConcernError->getCode(),
+                    var_export($writeConcernError->getInfo(), true));
+                Log::error($log);
+                return $this->fail($log);
                 return [
                     'code' => -1,
-                    'msg'  => $log,
+                    'msg' => $log,
                 ];
             }
 
             // Check if any write operations did not complete at all
             foreach ($result->getWriteErrors() as $writeError) {
-              $log = sprintf("Operation#%d: %s (%d)\n",
+                $log = sprintf("Operation#%d: %s (%d)\n",
                     $writeError->getIndex(),
                     $writeError->getMessage(),
                     $writeError->getCode());
-              Log::error($log);
-              return [
-                  'code' => -1,
-                  'msg'  => $log,
-              ];
+                Log::error($log);
+                return [
+                    'code' => -1,
+                    'msg' => $log,
+                ];
             }
         } catch (Exception $e) {
             $log = printf("Other error: %s\n", $e->getMessage());
             Log::error($log);
             return [
                 'code' => -1,
-                'msg'  => $log,
+                'msg' => $log,
             ];
         }
         return [
             'code' => 0,
-            'msg'  => $result,
+            'msg' => $result,
         ];
     }
 }

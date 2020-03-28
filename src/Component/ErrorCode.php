@@ -5,6 +5,7 @@
  * Date: 2019-08-08 16:52
  * Email: <rentianyi@homme-inc.com>
  */
+
 namespace ZhijiaCommon\Component;
 
 use ZhijiaCommon\Exceptions\Base\ApiException;
@@ -16,27 +17,20 @@ use Exception;
  */
 trait ErrorCode
 {
-    /**
-     * Error Code List.
-     * 错误码列表
-     * @var array
-     */
-    private $errorCodeList = [
-        //基础请求
+    //基础请求
+    public static $errorCodeList = [
         200 => '成功',
         403 => '权限不足',
         404 => '未找到页面',
-        //指定模块请求
-        //通用模块
+    ];
+    //通用模块
+    public static $errorCodeCommonList = [
         1001 => '必要参数不可为空',
         1002 => '未找到相关数据',
         1003 => '删除失败，请重新尝试',
         1004 => '添加失败，请重新尝试',
         1005 => '编辑失败，请重新尝试',
         1006 => '您尚未进行修改任何',
-
-
-
         2001 => '用户数据过期，请重新登陆',
         2002 => '缺少token参数',
         2003 => '验证系统异常，请检查',
@@ -44,7 +38,9 @@ trait ErrorCode
         2005 => '七牛云请求异常',
         2006 => '文件扩展名不符，请重新上传',
         2007 => '单文件大小超过文件上传最大限制（3MB）',
-        //供应商管理模块
+    ];
+    ///供应商管理服务从10001开始
+    public static $errorCodeSupplierList = [
         10001 => '供应商数据保存失败，请稍后再试',
         10002 => '供应商名称已存在，不可重复添加',
         10003 => '供应商已存在，请检查修改的供应商名称',
@@ -59,6 +55,39 @@ trait ErrorCode
         //参数合法模块
         15000 => '参数错误：type',
     ];
+    ///订单服务从20001开始
+    public static $errorCodeOrderList = [
+        20001 => '您已提交订单，请勿重复提交',
+    ];
+    ///商品服务从30001开始
+    public static $errorCodeGoodsList = [
+        30001 => '商品数据保持失败，请稍后再试',
+    ];
+    ///用户服务从40001开始
+    public static $errorCodeUserList = [
+        40001 => '用户数据保持失败，请稍后再试',
+    ];
+    ///促销活动服务50001开始
+    public static $errorCodeActivityList = [
+        50001 => '活动数据保持失败，请稍后再试',
+    ];
+    ///卡券服务60001开始
+    public static $errorCodeCouponsList = [
+        60001 => '卡券数据保持失败，请稍后再试',
+    ];
+    ///评论服务70001开始
+    public static $errorCodeCommentList = [
+        70001 => '评论数据保持失败，请稍后再试',
+    ];
+    ///搜索服务80001开始
+    public static $errorCodeSearchList = [
+        80001 => '搜索数据保持失败，请稍后再试',
+    ];
+    ///数据看板dashboard服务90001开始
+    public static $errorCodeDashBoardList = [
+        90001 => '看板数据保持失败，请稍后再试',
+    ];
+
 
     /**
      * Return API interface exception.
@@ -66,7 +95,7 @@ trait ErrorCode
      * @param $code
      * @throws ApiException
      */
-    public function returnException($code) : void
+    public function returnException($code): void
     {
         //如果不存在错误码则抛出异常
         if (!array_key_exists($code, $this->errorCodeList)) {
