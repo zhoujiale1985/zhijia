@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Component;
+namespace ZhijiaCommon\Component;
 
 use MyCLabs\Enum\Enum;
 

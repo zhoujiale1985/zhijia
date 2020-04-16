@@ -1,6 +1,6 @@
 <?php
 
-namespace App\lib;
+namespace ZhijiaCommon\Component;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
