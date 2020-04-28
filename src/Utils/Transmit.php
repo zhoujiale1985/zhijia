@@ -1,11 +1,18 @@
 <?php
-
-
 namespace ZhijiaCommon\Utils;
 
+use GuzzleHttp\Client;
+use Zipkin\Propagation\DefaultSamplingFlags;
+use Zipkin\Propagation\Map;
+use Zipkin\Timestamp;
 
 class Transmit
 {
+    public function reqWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com')
+    {
+        return ZipkinUtils::requestWithZipkin($spanName, $reqType, $serviceName);
+    }
+
     public function otherPost($url, $filter, $token, $is_close = false)
     {
         $curl = curl_init();
@@ -29,6 +36,7 @@ class Transmit
             //关闭URL请求
             curl_close($curl);
         }
+
         return $data;
     }
 
@@ -112,6 +120,7 @@ class Transmit
             die('curl的问题：url 为' . $url . '具体错误为：' . curl_error($ch));//出问题，就发钉钉
         }
         curl_close($ch);
+
         return $response;
     }
 }
