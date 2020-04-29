@@ -24,8 +24,7 @@ class ZipkinUtils
     {
         $httpReporterURL = getenv('HTTP_REPORTER_URL');
         if ($httpReporterURL === false) {
-            #$httpReporterURL = 'http://192.168.99.100:9411/api/v2/spans';
-            $httpReporterURL = 'http://tracing-analysis-dc-bj.aliyuncs.com/adapt_a53rxxr41i@68b44f02f7bd977_a53rxxr41i@53df7ad2afe8301/api/v2/spans';
+            throw new \Exception('please set HTTP_REPORTER_URL env var');
         }
 
         $endpoint = Endpoint::create($localServiceName, $localServiceIPv4, null, $localServicePort);
@@ -43,9 +42,16 @@ class ZipkinUtils
         return $tracing;
     }
 
+    /**
+     * 发起一次service的http请求，并生成zipkin child span
+     * @param string $spanName
+     * @param string $reqType
+     * @param string $serviceName
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public static function requestWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com')
     {
-        /* Creates the span for getting the users list */
+        /* Creates the span  */
         $request = request();
         $span = $request['zipkin_span_obj'];
         $tracer = $request['zipkin_tracer_obj'];
@@ -67,5 +73,42 @@ class ZipkinUtils
         $childSpan->finish();
 
         return $response;
+    }
+
+    /**
+     * 创建捕获异常的zipkin span
+     * @param string $spanName
+     * @param Exception $exception
+     * @return bool
+     */
+    public static function createChildSpanForException($spanName='exception_handle', $exception)
+    {
+        /* Creates the child span */
+        $request = request();
+        $span = $request['zipkin_span_obj'];
+        $tracer = $request['zipkin_tracer_obj'];
+        $tracing = $request['zipkin_tracing_obj'];
+        $childSpan = $tracer->newChild($span->getContext());
+        $childSpan->start();
+        $childSpan->setKind(Kind\CLIENT);
+        $childSpan->setName($spanName);
+//        $exceptionTraceString = CommonUtils::getExceptionTraceAsString($exception);
+        $errMsg['Msg'] = $exception->getMessage();
+        $lineInfo = $exception->getFile() . '(' . $exception->getLine() . ')';
+        $errMsg['Trace'] = $lineInfo . PHP_EOL . $exception->getTraceAsString();
+        $childSpan->tag('stack', 'Exception:'.json_encode($errMsg));
+        $childSpan->finish();
+
+        return true;
+    }
+
+    public static function createChildSpanForMysql()
+    {
+        // todo...
+    }
+
+    public static function createChildSpanForRedis()
+    {
+        // todo...
     }
 }
