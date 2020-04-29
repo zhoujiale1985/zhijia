@@ -102,13 +102,52 @@ class ZipkinUtils
         return true;
     }
 
-    public static function createChildSpanForMysql()
+    /**
+     * 创建sql child span
+     * @param string $spanName
+     * @param array $querySql
+     * @return bool
+     */
+    public static function createChildSpanForMysql($spanName='query_mysql', $querySql=[])
     {
-        // todo...
+        /* Creates the child span */
+        $request = request();
+        $span = $request['zipkin_span_obj'];
+        $tracer = $request['zipkin_tracer_obj'];
+        $tracing = $request['zipkin_tracing_obj'];
+        $childSpan = $tracer->newChild($span->getContext());
+        $childSpan->start();
+        $childSpan->setKind(Kind\CLIENT);
+        $childSpan->setName($spanName);
+        $childSpan->tag('db.statement', json_encode($querySql));
+        $childSpan->finish();
+
+        return true;
     }
 
-    public static function createChildSpanForRedis()
+    /**
+     * 生成mongo child span
+     * @param string $spanName
+     * @param array $queryMongo
+     * @return bool
+     */
+    public static function createChildSpanForMongo($spanName='query_mongo', $queryMongo=[])
     {
-        // todo...
+        self::createChildSpanForMysql($spanName, $queryMongo);
+
+        return true;
+    }
+
+    /**
+     * 生成redis child span
+     * @param string $spanName
+     * @param array $querySql
+     * @return bool
+     */
+    public static function createChildSpanForRedis($spanName='query_redis', $queryRedis=[])
+    {
+        self::createChildSpanForMysql($spanName, $queryRedis);
+
+        return true;
     }
 }
