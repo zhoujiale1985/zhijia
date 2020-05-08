@@ -12,6 +12,7 @@ use Zipkin\Propagation\Map;
 use Zipkin\Timestamp;
 use Zipkin\Kind;
 use Zipkin\Reporters;
+use Zipkin\Tags;
 
 class ZipkinUtils
 {
@@ -96,7 +97,7 @@ class ZipkinUtils
         $errMsg['Msg'] = $exception->getMessage();
         $lineInfo = $exception->getFile() . '(' . $exception->getLine() . ')';
         $errMsg['Trace'] = $lineInfo . PHP_EOL . $exception->getTraceAsString();
-        $childSpan->tag('stack', 'Exception:'.json_encode($errMsg));
+        $childSpan->tag(Tags\ERROR, json_encode($errMsg));
         $childSpan->finish();
 
         return true;
@@ -108,7 +109,7 @@ class ZipkinUtils
      * @param array $querySql
      * @return bool
      */
-    public static function createChildSpanForMysql($spanName='query_mysql', $querySql=[])
+    public static function createChildSpanForMysql($spanName='query_mysql', $querySql='', $dbType='sql', $dbInstance='')
     {
         /* Creates the child span */
         $request = request();
@@ -119,7 +120,9 @@ class ZipkinUtils
         $childSpan->start();
         $childSpan->setKind(Kind\CLIENT);
         $childSpan->setName($spanName);
-        $childSpan->tag('db.statement', json_encode($querySql));
+        $childSpan->tag('db.statement', $querySql);
+        $childSpan->tag('db.type', $dbType);
+        $childSpan->tag('db.instance', $dbInstance);
         $childSpan->finish();
 
         return true;
@@ -131,9 +134,9 @@ class ZipkinUtils
      * @param array $queryMongo
      * @return bool
      */
-    public static function createChildSpanForMongo($spanName='query_mongo', $queryMongo=[])
+    public static function createChildSpanForMongo($spanName='query_mongo', $queryMongo=[], $dbType='mongo', $dbInstance='')
     {
-        self::createChildSpanForMysql($spanName, $queryMongo);
+        self::createChildSpanForMysql($spanName, $queryMongo, $dbType, $dbInstance);
 
         return true;
     }
@@ -144,9 +147,9 @@ class ZipkinUtils
      * @param array $querySql
      * @return bool
      */
-    public static function createChildSpanForRedis($spanName='query_redis', $queryRedis=[])
+    public static function createChildSpanForRedis($spanName='query_redis', $queryRedis=[], $dbType='redis', $dbInstance='')
     {
-        self::createChildSpanForMysql($spanName, $queryRedis);
+        self::createChildSpanForMysql($spanName, $queryRedis, $dbType, $dbInstance);
 
         return true;
     }
