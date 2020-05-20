@@ -89,16 +89,18 @@ class ZipkinUtils
         $span = $request['zipkin_span_obj'];
         $tracer = $request['zipkin_tracer_obj'];
         $tracing = $request['zipkin_tracing_obj'];
-        $childSpan = $tracer->newChild($span->getContext());
-        $childSpan->start();
-        $childSpan->setKind(Kind\CLIENT);
-        $childSpan->setName($spanName);
+        if($tracer) {
+            $childSpan = $tracer->newChild($span->getContext());
+            $childSpan->start();
+            $childSpan->setKind(Kind\CLIENT);
+            $childSpan->setName($spanName);
 //        $exceptionTraceString = CommonUtils::getExceptionTraceAsString($exception);
-        $errMsg['Msg'] = $exception->getMessage();
-        $lineInfo = $exception->getFile() . '(' . $exception->getLine() . ')';
-        $errMsg['Trace'] = $lineInfo . PHP_EOL . $exception->getTraceAsString();
-        $childSpan->tag(Tags\ERROR, json_encode($errMsg));
-        $childSpan->finish();
+            $errMsg['Msg'] = $exception->getMessage();
+            $lineInfo = $exception->getFile() . '(' . $exception->getLine() . ')';
+            $errMsg['Trace'] = $lineInfo . PHP_EOL . $exception->getTraceAsString();
+            $childSpan->tag(Tags\ERROR, json_encode($errMsg));
+            $childSpan->finish();
+        }
 
         return true;
     }
@@ -116,14 +118,16 @@ class ZipkinUtils
         $span = $request['zipkin_span_obj'];
         $tracer = $request['zipkin_tracer_obj'];
         $tracing = $request['zipkin_tracing_obj'];
-        $childSpan = $tracer->newChild($span->getContext());
-        $childSpan->start();
-        $childSpan->setKind(Kind\CLIENT);
-        $childSpan->setName($spanName);
-        $childSpan->tag('db.statement', $querySql);
-        $childSpan->tag('db.type', $dbType);
-        $childSpan->tag('db.instance', $dbInstance);
-        $childSpan->finish();
+        if($tracer) {
+            $childSpan = $tracer->newChild($span->getContext());
+            $childSpan->start();
+            $childSpan->setKind(Kind\CLIENT);
+            $childSpan->setName($spanName);
+            $childSpan->tag('db.statement', $querySql);
+            $childSpan->tag('db.type', $dbType);
+            $childSpan->tag('db.instance', $dbInstance);
+            $childSpan->finish();
+        }
 
         return true;
     }
