@@ -8,13 +8,35 @@ use Zipkin\Timestamp;
 
 class Transmit
 {
-    public function reqWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com')
+    # http调用是否生成zipkin child span
+    private $transmitZipkinSpan = false;
+
+    public function __construct()
     {
-        return ZipkinUtils::requestWithZipkin($spanName, $reqType, $serviceName);
+        $tansmitFlag = getenv(TRANSMIT_ZIPKIN_SPAN);
+        if($tansmitFlag){
+            $this->transmitZipkinSpan = $tansmitFlag;
+        }
+    }
+
+    /**
+     * 生成zipkin child span 并且返回结果
+     * @param string $spanName span 名称
+     * @param string $reqType http method:GET|POST
+     * @param string $serviceName 服务请求url连接
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function reqWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com', $token='', $filter=[])
+    {
+        return ZipkinUtils::requestWithZipkin($spanName, $reqType, $serviceName, $token, $filter);
     }
 
     public function otherPost($url, $filter, $token, $is_close = false)
     {
+        if($this->transmitZipkinSpan){
+            return $this->reqWithZipkin('transmit_otherpost_span', 'POST', $url, $token, $filter);
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -42,6 +64,10 @@ class Transmit
 
     public function otherGet($url, $token)
     {
+        if($this->transmitZipkinSpan){
+            return $this->reqWithZipkin('transmit_otherget_span', 'GET', $url, $token);
+        }
+
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);//设置抓取的ur
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);

@@ -50,7 +50,7 @@ class ZipkinUtils
      * @param string $serviceName
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public static function requestWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com')
+    public static function requestWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com', $token='', $filter=[])
     {
         /* Creates the span  */
         $request = request();
@@ -65,15 +65,25 @@ class ZipkinUtils
         /* Injects the context into the wire */
         $injector = $tracing->getPropagation()->getInjector(new Map());
         $injector($childSpan->getContext(), $headers);
+        if($reqType){
+            $headers['newadmin-token'] = $token;
+        }
         /* HTTP Request to the backend */
         $httpClient = new Client();
-        $request = new \GuzzleHttp\Psr7\Request($reqType, $serviceName, $headers);
+        $request = new \GuzzleHttp\Psr7\Request($reqType, $serviceName, $headers, json_encode($filter));
         $childSpan->annotate('request_started', Timestamp\now());
         $response = $httpClient->send($request);
+        $code = $response->getStatusCode();
+        $body = $response->getBody()->getContents();
         $childSpan->annotate('request_finished', Timestamp\now());
         $childSpan->finish();
-
-        return $response;
+        //显示获得的数据
+        if ($code == 200) {
+            $data = json_decode($body, true);
+            return $data;
+        } else {
+            return;
+        }
     }
 
     /**
