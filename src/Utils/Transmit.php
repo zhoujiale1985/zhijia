@@ -2,6 +2,7 @@
 namespace ZhijiaCommon\Utils;
 
 use GuzzleHttp\Client;
+use Redis;
 use Zipkin\Propagation\DefaultSamplingFlags;
 use Zipkin\Propagation\Map;
 use Zipkin\Timestamp;
@@ -13,8 +14,8 @@ class Transmit
 
     public function __construct()
     {
-        $tansmitFlag = getenv(TRANSMIT_ZIPKIN_SPAN);
-        if($tansmitFlag){
+        $tansmitFlag = env('TRANSMIT_ZIPKIN_SPAN');
+        if($tansmitFlag === true){
             $this->transmitZipkinSpan = $tansmitFlag;
         }
     }
@@ -28,6 +29,7 @@ class Transmit
      */
     public function reqWithZipkin($spanName='child_span_name', $reqType='POST', $serviceName='servicename.com', $token='', $filter=[])
     {
+
         return ZipkinUtils::requestWithZipkin($spanName, $reqType, $serviceName, $token, $filter);
     }
 
