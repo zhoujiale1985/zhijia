@@ -57,6 +57,9 @@ class ZipkinUtils
         $span = $request['zipkin_span_obj'];
         $tracer = $request['zipkin_tracer_obj'];
         $tracing = $request['zipkin_tracing_obj'];
+        if(!$tracer){
+            return ;
+        }
         $childSpan = $tracer->newChild($span->getContext());
         $childSpan->start();
         $childSpan->setKind(Kind\CLIENT);
