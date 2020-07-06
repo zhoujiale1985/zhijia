@@ -11,9 +11,11 @@ class Transmit
 {
     # http调用是否生成zipkin child span
     private $transmitZipkinSpan = false;
+    private $mode = 'http';
 
-    public function __construct()
+    public function __construct($mode='http')
     {
+        $this->mode = $mode;
         $tansmitFlag = env('TRANSMIT_ZIPKIN_SPAN');
         if($tansmitFlag === true){
             $this->transmitZipkinSpan = $tansmitFlag;
@@ -33,9 +35,17 @@ class Transmit
         return ZipkinUtils::requestWithZipkin($spanName, $reqType, $serviceName, $token, $filter);
     }
 
+    /**
+     * @param $url
+     * @param $filter
+     * @param $token
+     * @param bool $is_close
+     * @param string $mode 'http'|'cli'
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     */
     public function otherPost($url, $filter, $token, $is_close = false)
     {
-        if($this->transmitZipkinSpan){
+        if($this->transmitZipkinSpan && $this->mode=='http'){
             return $this->reqWithZipkin('transmit_otherpost_span', 'POST', $url, $token, $filter);
         }
 
@@ -64,9 +74,15 @@ class Transmit
         return $data;
     }
 
+    /**
+     * @param $url
+     * @param $token
+     * @param string $mode 'http'|'cli'
+     * @return mixed|\Psr\Http\Message\ResponseInterface|void
+     */
     public function otherGet($url, $token)
     {
-        if($this->transmitZipkinSpan){
+        if($this->transmitZipkinSpan && $this->mode=='http'){
             return $this->reqWithZipkin('transmit_otherget_span', 'GET', $url, $token);
         }
 
