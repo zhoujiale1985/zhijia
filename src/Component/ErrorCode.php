@@ -83,6 +83,7 @@ trait ErrorCode
     ///促销活动服务50001开始
     public static $errorCodeActivityList = [
         50001 => [50001, '活动数据保持失败，请稍后再试'],
+        50002 => [50002, '已添加首页弹窗展示活动'],
     ];
     ///卡券服务60001开始
     public static $errorCodeCouponsList = [
